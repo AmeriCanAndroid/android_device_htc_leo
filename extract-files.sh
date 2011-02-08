@@ -31,7 +31,6 @@ adb pull /system/etc/firmware/BCM4329B1_002.002.023.0436.0439.hcd ../../../vendo
 adb pull /system/etc/firmware/BCM4329B1_002.002.023.0436.0439.hcd ../../../vendor/$MANUFACTURER/$DEVICE/proprietary/BCM4329B1_002.002.023.0436.0439.hcd
 adb pull /system/etc/firmware/BCM4329B1_002.002.023.0436.0439.hcd ../../../vendor/$MANUFACTURER/$DEVICE/proprietary/BCM4329B1_002.002.023.0511.0538.hcd
 adb pull /system/etc/firmware/bcm4329.hcd ../../../vendor/$MANUFACTURER/$DEVICE/proprietary/bcm4329.hcd
-adb pull /system/etc/firmware/htcleo.acdb ../../../vendor/$MANUFACTURER/$DEVICE/proprietary/htcleo.acdb
 adb pull /system/etc/firmware/default.acdb ../../../vendor/$MANUFACTURER/$DEVICE/proprietary/default.acdb
 adb pull /system/etc/firmware/yamato_pfp.fw ../../../vendor/$MANUFACTURER/$DEVICE/proprietary/yamato_pfp.fw
 adb pull /system/etc/firmware/yamato_pm4.fw ../../../vendor/$MANUFACTURER/$DEVICE/proprietary/yamato_pm4.fw
