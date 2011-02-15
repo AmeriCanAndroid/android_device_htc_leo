@@ -15,6 +15,7 @@
 LOCAL_PATH := $(my-dir)
 subdir_makefiles := \
 	$(LOCAL_PATH)/libreference-ril/Android.mk \
+	$(LOCAL_PATH)/wrapper/Android.mk \
 	$(LOCAL_PATH)/libsensors/Android.mk \
 	$(LOCAL_PATH)/liblights/Android.mk
 
