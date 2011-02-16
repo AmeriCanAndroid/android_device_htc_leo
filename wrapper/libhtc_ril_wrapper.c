@@ -251,7 +251,7 @@ void interceptOnRequestComplete(RIL_Token t, RIL_Errno e, void *response, size_t
             strncat(dbg, strings[i] ? strings[i] : "null", 127);
             strncat(dbg, " ", 127);
         }
-        LOGW(dbg);
+        LOGW("DBG WORKAROUND JUST HAPPENED");
         // Workaround for htc_ril bug, it sometimes set null to string[0] that make rild crash
         if(strings[0] == NULL)
             strings[0] = "0";
