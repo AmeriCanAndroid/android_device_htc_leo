@@ -306,6 +306,11 @@ void interceptRequestTimedCallback(RIL_TimedCallback callback, void *param,
     s_rilenv->RequestTimedCallback(callback, param, relativeTime);
 }
 
+void hackOnRequestDataCallList(char **data, size_t datalen, RIL_Token t)
+{
+	LOGD("PL:hackOnRequestDataCallList token=(%x)", (unsigned int)t);
+	request_call_list_token = t;
+}
 
 void hackOnRequestRegistrationState(char **data, size_t datalen, RIL_Token t)
 {
@@ -526,16 +531,19 @@ void onRequest(int request, void *data, size_t datalen, RIL_Token t) {
             htc_onRequest(request, data, datalen, t);
             return;
         } else if(request == RIL_REQUEST_DATA_CALL_LIST) {
-            // cheat here
-            LOGW("*** Request call list, fake reply ***");
-            RIL_Data_Call_Response data_call;
-            data_call.cid = 1;
-            data_call.active = 1;
-            data_call.type = "IP";
-            data_call.apn = current_apn;
-            data_call.address = "";
-            RIL_onRequestComplete(t, RIL_E_SUCCESS, &data_call, sizeof(data_call));
-            return;
+            // cheat here - Keep these just in case we ever want to fall back to it.
+            //LOGW("*** Request call list, fake reply ***");
+            //RIL_Data_Call_Response data_call;
+            //data_call.cid = 1;
+            //data_call.active = 1;
+            //data_call.type = "IP";
+            //data_call.apn = current_apn;
+            //data_call.address = "";
+            //RIL_onRequestComplete(t, RIL_E_SUCCESS, &data_call, sizeof(data_call));
+            //return;
+	hackOnRequestDataCallList(data, datalen, t);
+	htc_onRequest(request, data, datalen, t);
+	return;
         }
     }
 	return htc_onRequest(request, data, datalen, t);
