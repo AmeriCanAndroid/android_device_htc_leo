@@ -44,6 +44,7 @@ PRODUCT_PROPERTY_OVERRIDES += \
     ro.ril.hsxpa=2 \
     wifi.interface=eth0 \
     wifi.supplicant_scan_interval=15
+    mobiledata.interfaces=ppp,rmnet0,rmnet1,rmnet2 \
 
 # Default network type.
 # 0 => WCDMA preferred.
