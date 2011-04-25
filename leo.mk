@@ -27,6 +27,7 @@ PRODUCT_COPY_FILES += \
 
 PRODUCT_COPY_FILES += \
     device/htc/leo/init.leo.rc:root/init.leo.rc \
+    vendor/htc/leo/proprietary/libcamera.so:obj/lib/libcamera.so
 
 PRODUCT_PROPERTY_OVERRIDES += \
     ro.sf.lcd_density=240 \
