@@ -97,8 +97,8 @@ PRODUCT_COPY_FILES += \
     device/htc/leo/media_profiles.xml:system/etc/media_profiles.xml
 
 PRODUCT_PACKAGES += \
-    sensors.leo \
-    lights.leo \
+    sensors.htcleo \
+    lights.htcleo \
     librs_jni \
     gralloc.qsd8k \
     copybit.qsd8k \
