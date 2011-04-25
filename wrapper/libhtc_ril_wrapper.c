@@ -205,7 +205,7 @@ void launch_pppd()
                         } else if(failure_cnt > 5) {
                             // nothing does it, don't hammer modem
                             LOGE("full restart doesn't cut it, giving up");
-                            sleep(30);
+                            sleep(7);
                         }
                     }
                     else {
