@@ -1,21 +1,10 @@
-on init
-    mount rootfs rootfs / remount
-    mkdir /app-cache 01777 system system
-    mount tmpfs tmpfs /app-cache size=8m
-    mount rootfs rootfs / ro remount
-
-# Define the memory thresholds at which the above process classes will
-# be killed.  These numbers are in pages (4k).
-    setprop ro.FOREGROUND_APP_MEM 3584
-    setprop ro.VISIBLE_APP_MEM 4096
-    setprop ro.SECONDARY_SERVER_MEM 6144
-    setprop ro.BACKUP_APP_MEM 6144
-    setprop ro.HOME_APP_MEM 6144
-    setprop ro.HIDDEN_APP_MEM 7168
-    setprop ro.CONTENT_PROVIDER_MEM 7680
-    setprop ro.EMPTY_APP_MEM 8192
-
 on boot
+
+    # Create Camera links
+    symlink /dev/msm_camera/control0 /dev/msm_camera/control1
+    symlink /dev/msm_camera/frame0 /dev/msm_camera/frame1
+    symlink /dev/msm_camera/config0 /dev/msm_camera/config1
+
     mkdir /data/misc/wifi 0770 wifi wifi
     mkdir /data/misc/wifi/sockets 0770 wifi wifi
     mkdir /data/misc/dhcp 0770 dhcp dhcp
@@ -26,25 +15,50 @@ on boot
     chown bluetooth bluetooth /sys/class/rfkill/rfkill0/state
     chmod 0660                /sys/class/rfkill/rfkill0/state
     
-    chown radio radio /sys/module/pm/parameters/idle_sleep_mode
+    # bluetooth MAC address programming
+    chown bluetooth bluetooth /sys/module/board_htcleo/parameters/bdaddr
+    setprop ro.bt.bdaddr_path /sys/module/board_htcleo/parameters/bdaddr
 
-    # for wireless modem
-    chown system system /sys/module/serial/parameters/modem_enabled
-    chown system system /dev/ttyHSUSB0
-    chown system system /dev/smd9
-    chown media media /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+    # bluetooth car dock pin
+    chown system system /sys/class/switch/dock/bt_pin
+
+    # Permissions for Liblights.
+    chown system system /sys/class/leds/green/brightness
+    chown system system /sys/class/leds/green/blink
+    chown system system /sys/class/leds/amber/brightness
+    chown system system /sys/class/leds/amber/blink
+    chown system system /sys/class/leds/button-backlight/brightness
+    chown system system /sys/class/leds/lcd-backlight/brightness
+
+    # flashlight
+    chown system camera /sys/devices/platform/flashlight.0/leds/flashlight/brightness
+    chmod 0660          /sys/devices/platform/flashlight.0/leds/flashlight/brightness
+
+    # enable the GPS
+    setprop ro.ril.def.agps.mode 2
+
+    # performance tweaks for flash
+    write /sys/block/mtdblock0/bdi/read_ahead_kb 12
+    write /sys/block/mtdblock1/bdi/read_ahead_kb 12
+    write /sys/block/mtdblock2/bdi/read_ahead_kb 12
+    write /sys/block/mtdblock3/bdi/read_ahead_kb 12
+    write /sys/block/mtdblock4/bdi/read_ahead_kb 12
+    write /sys/block/mtdblock5/bdi/read_ahead_kb 12
 
     # Power Management
-    write /sys/devices/system/cpu/cpu0/cpufreq/ondemand/sampling_rate 40000
+    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq 245000
+    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq 998400
+    #write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor ondemand
+    #write /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate 40000
 
-    # Overwrite framework low memory killer minfree setting
-    write /sys/module/lowmemorykiller/parameters/minfree 3584,4096,6144,7168,7680,8192
 
-    # Enable low memory killer to check file pages
-    write /sys/module/lowmemorykiller/parameters/minfile 0,0,0,5120,5632,6144
-    write /sys/module/lowmemorykiller/parameters/check_filepages 1
+    # Fast dormancy settings
+    setprop ro.ril.fast.dormancy.rule 1
+    setprop ro.ril.fd.scron.timeout 4
+    setprop ro.ril.fd.scroff.timeout 3
+    
 
-service wpa_supplicant /system/bin/logwrapper /system/bin/wpa_supplicant \
+service wpa_supplicant /system/bin/wpa_supplicant \
     -Dwext -ieth0 -c/data/misc/wifi/wpa_supplicant.conf
 #   we will start as root and wpa_supplicant will switch to user wifi
 #   after setting up the capabilities required for WEXT
@@ -53,7 +67,6 @@ service wpa_supplicant /system/bin/logwrapper /system/bin/wpa_supplicant \
     socket wpa_eth0 dgram 660 wifi wifi
     disabled
     oneshot
-
 
 service dhcpcd_eth0 /system/bin/dhcpcd -ABKL eth0
     disabled
@@ -64,26 +77,13 @@ service akmd /system/bin/akmd
     user compass
     group compass misc input
 
-# bugreport is triggered by the KEY_VOLUMEUP and BTN_MOUSE keycodes
-service bugreport /system/bin/dumpstate -d -v -o /sdcard/bugreports/bugreport
-    disabled
-    oneshot
-    keycodes 115 272
-
-#service hciattach /system/bin/brcm_patchram_plus --enable_hci --patchram /etc/firmware/bcm4329.hcd /dev/ttyHS0
-#    user bluetooth
-#    group bluetooth net_bt_admin
-#    disabled
-
-# Make sure we startup btld before hcid
-# Set target address to emulator host loopback IF
-# Limit baudrate to 460800 to ensure reliable uart operation 
-#service btld /system/bin/logwrapper /system/bin/btld -hwtun 10.0.2.2 -hb 460800 3000000 -lpm 1
-service btld /system/bin/logwrapper /system/bin/btld -lpm 1 -hb 3000000
-    user root
+service hciattach /system/bin/brcm_patchram_plus --enable_hci \
+    --baudrate 3000000 --patchram /etc/firmware/bcm4329.hcd /dev/ttyHS0
+    user bluetooth
     group bluetooth net_bt_admin
     disabled
-    oneshot
+
+service dspcrashd /system/bin/dspcrashd
 
 # for USB internet sharing
 service udhcpd /system/bin/udhcpd
