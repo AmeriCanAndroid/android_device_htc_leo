@@ -145,6 +145,9 @@
     <!-- The default iface on which to monitor data use -->
     <string name="config_datause_iface">ppp0</string>
 
+    <!-- Enabled SIP on WIFI if set True.  Leo set False -->
+    <bool name="config_sip_wifi_only">false</bool>
+
     <!-- Boolean indicating if we require the use of DUN on mobile for tethering -->
     <bool translatable="false" name="config_tether_dun_required">false</bool>
 
