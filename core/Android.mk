@@ -1,3 +1,2 @@
-ifeq ($(TARGET_DEVICE),leo)
-	include $(all-sub-dir-makefiles)
-endif
+include $(all-sub-dir-makefiles)
+
