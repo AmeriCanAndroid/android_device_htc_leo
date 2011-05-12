@@ -92,6 +92,7 @@ BOARD_USE_KINETO_COMPATIBILITY := true
 BOARD_HAVE_FM_RADIO := true
 BOARD_GLOBAL_CFLAGS += -DHAVE_FM_RADIO
 
+BOARD_USE_USB_MASS_STORAGE_SWITCH := true
 
 # # cat /proc/mtd
 # dev:    size   erasesize  name
