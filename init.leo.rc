@@ -83,6 +83,12 @@ service akmd /system/bin/akmd
     user compass
     group compass misc input
 
+service hciattach /system/bin/brcm_patchram_plus --enable_lpm --enable_hci \
+	--baudrate 3000000 --patchram /etc/firmware/bcm4329.hcd /dev/ttyHS0
+	user bluetooth
+	group bluetooth net_bt_admin
+	disabled
+
 service dspcrashd /system/bin/dspcrashd
 
 # for USB internet sharing
