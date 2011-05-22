@@ -75,6 +75,11 @@
         <item>0</item>
     </integer-array>
 
+    <!-- Handle notifications differently if device only uses an amber/green
+         LED. This also needs a liblights module that enables them accordingly. -->
+    <bool name="config_amber_green_light">true</bool>
+
+
     <!-- Array of output values for keyboard backlight corresponding to the LUX values
          in the config_autoBrightnessLevels array.  This array should have size one greater
          than the size of the config_autoBrightnessLevels array.
