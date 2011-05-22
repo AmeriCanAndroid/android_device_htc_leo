@@ -34,39 +34,45 @@
 
 /******************************************************************************/
 
+static pthread_once_t g_init = PTHREAD_ONCE_INIT;
 static pthread_mutex_t g_lock = PTHREAD_MUTEX_INITIALIZER;
-static struct light_state_t g_notification = {0,0,0,0,0};
-static struct light_state_t g_battery = {0,0,0,0,0};
 
-static char const*const GREEN_LED_FILE
+enum lights {
+    LED_GREEN=1, LED_AMBER
+};
+
+static int amberstate = 0;
+static int amberblink = 0;
+static int greenstate = 0;
+static int greenblink = 0;
+
+
+char const*const GREEN_LED_FILE
         = "/sys/class/leds/green/brightness";
 
-static char const*const AMBER_LED_FILE
+char const*const AMBER_LED_FILE
         = "/sys/class/leds/amber/brightness";
 
-static char const*const RED_LED_FILE
-        = "/sys/class/leds/red/brightness";
-
-static char const*const LCD_FILE
-        = "/sys/class/leds/lcd-backlight/brightness";
-
-static char const*const AMBER_BLINK_FILE
-        = "/sys/class/leds/amber/blink";
-
-static char const*const GREEN_BLINK_FILE
+char const*const GREEN_BLINK_FILE
         = "/sys/class/leds/green/blink";
 
-static char const*const RED_BLINK_FILE
-        = "/sys/class/leds/red/blink";
+char const*const AMBER_BLINK_FILE
+        = "/sys/class/leds/amber/blink";
 
+char const*const LCD_FILE
+        = "/sys/class/leds/lcd-backlight/brightness";
 
-static char const*const BUTTON_FILE
+char const*const BUTTON_FILE
         = "/sys/class/leds/button-backlight/brightness";
-
-
 /**
  * device methods
  */
+
+void init_globals(void)
+{
+    // init the mutex
+    pthread_mutex_init(&g_lock, NULL);
+}
 
 static int
 write_int(char const* path, int value)
@@ -110,11 +116,13 @@ set_light_backlight(struct light_device_t* dev,
 {
     int err = 0;
     int brightness = rgb_to_brightness(state);
+    //LOGD("set_light_backlight brightness=%d\n", brightness);
     pthread_mutex_lock(&g_lock);
     err = write_int(LCD_FILE, brightness);
     pthread_mutex_unlock(&g_lock);
     return err;
 }
+
 
 static int
 set_light_buttons(struct light_device_t* dev,
@@ -129,103 +137,82 @@ set_light_buttons(struct light_device_t* dev,
 }
 
 static int
-set_speaker_light_locked(struct light_device_t* dev,
-        struct light_state_t const* state)
+set_light_locked(enum lights light, unsigned int status, unsigned int blink)
 {
-    int len;
-    int alpha, red, green, blue;
-    int blink, freq, pwm;
-    int onMS, offMS;
-    unsigned int colorRGB;
+    //LOGD("set_light_locked light=%d, state=%d\n", light, status);
 
-    switch (state->flashMode) {
-        case LIGHT_FLASH_TIMED:
-            blink = 1;
-            onMS = state->flashOnMS;
-            offMS = state->flashOffMS;
+    char const* ledFile;
+    char const* blinkFile;
+
+    switch (light) {
+        case LED_AMBER:
+            ledFile = AMBER_LED_FILE;
+            blinkFile = AMBER_BLINK_FILE;
             break;
-        case LIGHT_FLASH_HARDWARE:
-            blink = 1;
-            onMS = state->flashOnMS;
-            offMS = state->flashOffMS;
-            break;
-        case LIGHT_FLASH_NONE:
-            blink = 0;
-            onMS = 0;
-            offMS = 0;
-            break;
+
+        case LED_GREEN:
         default:
-            blink = 1;
-            onMS = 0;
-            offMS = 0;
-            break;
+            ledFile = GREEN_LED_FILE;
+            blinkFile = GREEN_BLINK_FILE;
     }
 
-    colorRGB = state->color;
-
-#if 0
-    LOGD("set_speaker_light_locked colorRGB=%08X, onMS=%d, offMS=%d\n",
-            colorRGB, onMS, offMS);
-#endif
-
-    red = (colorRGB >> 16) & 0xFF;
-    green = (colorRGB >> 8) & 0xFF;
-    blue = colorRGB & 0xFF;
-
-    if (red) {
-        write_int(GREEN_LED_FILE, 0);
-        write_int(AMBER_LED_FILE, 1);
-        if (blink) {
-             //blink must come after brightness change
-             write_int(AMBER_BLINK_FILE, 1);
-        }
-    } else if (green || blue) {
-        write_int(AMBER_LED_FILE, 0);
-        write_int(GREEN_LED_FILE, 1);
-        if (blink) {
-             write_int(GREEN_BLINK_FILE, 1);
-        }
+    if (status) {
+        // bugfix: if blink=1 before brightness is set light doesn't blink
+        write_int(blinkFile, 0);
+        write_int(ledFile, 1);
+        if (blink) write_int(blinkFile, 1);
     } else {
-        write_int(GREEN_LED_FILE, 0);
-        write_int(AMBER_LED_FILE, 0);
+        write_int(ledFile, 0);
     }
 
     return 0;
-}
-
-static void
-handle_speaker_battery_locked(struct light_device_t* dev)
-{
-
-    if (is_lit(&g_battery)) {
-        set_speaker_light_locked(dev, &g_battery);
-    } else {
-        set_speaker_light_locked(dev, &g_notification);
-    }
 }
 
 static int
 set_light_battery(struct light_device_t* dev,
         struct light_state_t const* state)
 {
+    int red = (state->color >> 16) & 0xFF;
+    int green = (state->color >> 8) & 0xFF;
+    int status = (red && green);
+
+    if (status == amberstate &&
+            state->flashMode == amberblink) return 0;
+
+    amberstate = status;
+    amberblink = state->flashMode;
+
     pthread_mutex_lock(&g_lock);
-    g_battery = *state;
-    handle_speaker_battery_locked(dev);
+    set_light_locked(LED_AMBER, status, state->flashMode);
     pthread_mutex_unlock(&g_lock);
     return 0;
 }
 
 static int
-set_light_notifications(struct light_device_t* dev,
+set_light_notification(struct light_device_t* dev,
         struct light_state_t const* state)
 {
+    int status = (state->color >> 8) & 0xFF;
+
+    if (status == greenstate &&
+            state->flashMode == greenblink) return 0;
+
+    greenstate = status;
+    greenblink = state->flashMode;
+
     pthread_mutex_lock(&g_lock);
-    g_notification = *state;
-    handle_speaker_battery_locked(dev);
+    set_light_locked(LED_GREEN, status, state->flashMode);
     pthread_mutex_unlock(&g_lock);
     return 0;
 }
 
+static int
+set_light_attention(struct light_device_t* dev,
+        struct light_state_t const* state)
+{
+    // Legend doesn't have an attention light
+    return 0;
+}
 
 /** Close the lights device */
 static int
@@ -261,13 +248,19 @@ static int open_lights(const struct hw_module_t* module, char const* name,
         set_light = set_light_battery;
     }
     else if (0 == strcmp(LIGHT_ID_NOTIFICATIONS, name)) {
-        set_light = set_light_notifications;
+        set_light = set_light_notification;
+    }
+    else if (0 == strcmp(LIGHT_ID_ATTENTION, name)) {
+        set_light = set_light_attention;
     }
     else {
         return -EINVAL;
     }
 
-    struct light_device_t *dev = calloc(1, sizeof(struct light_device_t));
+    pthread_once(&g_init, init_globals);
+
+    struct light_device_t *dev = malloc(sizeof(struct light_device_t));
+    memset(dev, 0, sizeof(*dev));
 
     dev->common.tag = HARDWARE_DEVICE_TAG;
     dev->common.version = 0;
