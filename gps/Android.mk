@@ -19,6 +19,7 @@ LOCAL_SRC_FILES += leo-gps.c
 LOCAL_SHARED_LIBRARIES += librpc
 
 LOCAL_MODULE:= libgps.aca
+LOCAL_MODULE_TAGS := eng
 
 include $(BUILD_SHARED_LIBRARY)
 #include $(BUILD_STATIC_LIBRARY)
