@@ -26,7 +26,7 @@ PRODUCT_COPY_FILES += \
 ## (1) First, the most specific values, i.e. the aspects that are specific to GSM
 
 PRODUCT_COPY_FILES += \
-    device/htc/leo/init.leo.rc:root/init.leo.rc \
+    device/htc/leo/init.htcleo.rc:root/init.htcleo.rc \
 
 PRODUCT_PROPERTY_OVERRIDES += \
     ro.sf.lcd_density=240 \
