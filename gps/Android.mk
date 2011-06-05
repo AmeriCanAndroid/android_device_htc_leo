@@ -4,10 +4,7 @@
 LOCAL_PATH:= $(call my-dir)
 include $(CLEAR_VARS)
 
-ifneq ($(BOARD_GPS_LIBRARIES),)
-  LOCAL_CFLAGS           += -DHAVE_GPS_HARDWARE
-  LOCAL_SHARED_LIBRARIES += $(BOARD_GPS_LIBRARIES)
-endif
+LOCAL_CFLAGS           += -DHAVE_GPS_HARDWARE
 
 LOCAL_SHARED_LIBRARIES := libutils libcutils 
 
@@ -20,6 +17,8 @@ LOCAL_SHARED_LIBRARIES += librpc
 
 LOCAL_MODULE:= libgps.aca
 LOCAL_MODULE_TAGS := eng
+
+LOCAL_PRELINK_MODULE := false
 
 include $(BUILD_SHARED_LIBRARY)
 #include $(BUILD_STATIC_LIBRARY)
