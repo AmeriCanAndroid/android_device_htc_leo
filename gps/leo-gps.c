@@ -888,6 +888,10 @@ Fail:
 
 static int gps_init(OldGpsCallbacks* callbacks) {
 	GpsState*  s = _gps_state;
+	
+	memset(&s->status, 0, sizeof(&s->status));
+	s->status.size = sizeof(s->status);
+	s->status.status = GPS_STATUS_NONE;
 
 	if (!s->init)
 		gps_state_init(s);
@@ -966,7 +970,7 @@ static const void* gps_get_extension(const char* name) {
 }
 
 static const OldGpsInterface  sLocEngInterface = {
-    sizeof(OldGpsInterface),
+    sizeof(GpsInterface),
     gps_init,
     gps_start,
     gps_stop,
