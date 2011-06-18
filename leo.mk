@@ -99,7 +99,7 @@ PRODUCT_COPY_FILES += \
 
 PRODUCT_PACKAGES += \
     sensors.htcleo \
-    lights.qsd8k \
+    lights.htcleo \
     librs_jni \
     gralloc.qsd8k \
     copybit.qsd8k \
