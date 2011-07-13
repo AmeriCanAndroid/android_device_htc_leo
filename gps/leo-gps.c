@@ -37,11 +37,11 @@
 #define  LOG_TAG  "gps_leo"
 
 #define  XTRA_BLOCK_SIZE  400
-#define  DISABLE_XTRA_DATA 1 // AGPS data injection not works yet
 #define  DISABLE_CLEANUP   1 // fully shutting down the GPS is temporarily disabled
+#define  ENABLE_NMEA 1
 
-#define  MEASUREMENT_PRECISION  5.0f // in meters
-#define  DUMP_DATA  0
+#define  MEASUREMENT_PRECISION  10.0f // in meters
+#define  DUMP_DATA  1
 #define  GPS_DEBUG  1
 
 #if GPS_DEBUG
@@ -448,11 +448,11 @@ nmea_reader_parse( NmeaReader*  r )
     Token          tok;
     int            report_nmea = 0;
 
-#if DUMP_DATA & 0
+#if DUMP_DATA
     D("Received: %.*s", r->pos, r->in);
 #endif
     if (r->pos < 9) {
-#if DUMP_DATA & 0
+#if DUMP_DATA
         D("Too short. discarded.");
 #endif
         return;
@@ -484,7 +484,7 @@ nmea_reader_parse( NmeaReader*  r )
         // Satellites in View
         Token  tok_num_svs           = nmea_tokenizer_get(tzer, 3);
         int    num_svs = str2int(tok_num_svs.p, tok_num_svs.end);
-        report_nmea = 1;
+        //report_nmea = 1;
 
         if (num_svs > 0) {
             Token tok_total_sentences= nmea_tokenizer_get(tzer, 1);
@@ -607,7 +607,7 @@ nmea_reader_parse( NmeaReader*  r )
 
     } else {
         tok.p -= 2;
-#if DUMP_DATA & 0
+#if DUMP_DATA
         D("unknown sentence '%.*s", tok.end-tok.p, tok.p);
 #endif
     }
@@ -894,16 +894,24 @@ static void* gps_state_thread( void*  arg ) {
                 } else if (fd == gps_fd) {
                     char  buf[512];
                     int   nn, ret;
-                    //D("gps fd event");
+#if DUMP_DATA
+                    D("gps fd event");
+#endif
                     do {
                         ret = read( fd, buf, sizeof(buf) );
                     } while (ret < 0 && errno == EINTR);
 
                     if (ret > 0) {
-                        for (nn = 0; nn < ret; nn++)
+                        for (nn = 0; nn < ret; nn++) {
                             nmea_reader_addc( reader, buf[nn] );
+#if DUMP_DATA
+                            D("%2d, nmea_reader_addc() is called", nn+1);
+#endif
+                        }
                     }
-                    //D("gps fd event end");
+#if DUMP_DATA
+                    D("gps fd event end");
+#endif
                 } else {
                     LOGE("epoll_wait() returned unkown fd %d ?", fd);
                 }
@@ -921,7 +929,11 @@ static void gps_state_init( GpsState*  state ) {
     state->init       = 1;
     state->control[0] = -1;
     state->control[1] = -1;
+#if ENABLE_NMEA
     state->fd         = open("/dev/smd27", O_RDONLY);
+#else
+    state->fd         = -1;
+#endif
 
     if ( socketpair( AF_LOCAL, SOCK_STREAM, 0, state->control ) < 0 ) {
         LOGE("could not create thread control socket pair: %s", strerror(errno));
@@ -965,9 +977,6 @@ static int gps_xtra_init(GpsXtraCallbacks* callbacks) {
 static int gps_xtra_inject_xtra_data(char* data, int length) {
     D("%s() is called", __FUNCTION__);
     D("gps_xtra_inject_xtra_data: xtra size = %d, data ptr = 0x%x\n", length, (int) data);
-#if DISABLE_XTRA_DATA
-    return 0;
-#else
     GpsState*  s = _gps_state;
     if (!s->init)
         return 0;
@@ -1019,7 +1028,6 @@ static int gps_xtra_inject_xtra_data(char* data, int length) {
     }
 
     return ret_val;
-#endif
 }
 
 static const GpsXtraInterface  sGpsXtraInterface = {
@@ -1195,3 +1203,4 @@ const GpsInterface* gps_get_hardware_interface()
 }
 
 // END OF FILE
+
