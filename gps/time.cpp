@@ -6,3 +6,4 @@ extern "C" int64_t elapsed_realtime() {
     
     return realtime;
 }
+

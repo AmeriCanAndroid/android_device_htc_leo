@@ -356,3 +356,4 @@ const GpsInterface* gps_get_interface();
 #endif
 
 #endif  // _HARDWARE_GPS_H
+
