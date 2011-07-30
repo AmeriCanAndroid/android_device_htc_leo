@@ -1038,4 +1038,3 @@ void cleanup_gps_rpc_clients()
 }
 
 // END OF FILE
-
