@@ -1357,3 +1357,4 @@ const GpsInterface* gps_get_hardware_interface()
 }
 
 // END OF FILE
+
