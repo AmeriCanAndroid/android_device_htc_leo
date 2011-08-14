@@ -29,7 +29,7 @@ PRODUCT_COPY_FILES += \
     device/htc/leo/init.htcleo.rc:root/init.htcleo.rc \
 
 PRODUCT_PROPERTY_OVERRIDES += \
-    ro.sf.lcd_density=240 \
+    ro.sf.lcd_density=167 \
     rild.libpath=/system/lib/libhtc_ril.so \
     ro.ril.ecc.HTC-ELL=92,93,94 \
     ro.ril.ecc.HTC-WWE=999 \
@@ -37,14 +37,14 @@ PRODUCT_PROPERTY_OVERRIDES += \
     ro.ril.enable.a53.HTC-ITA=1 \
     ro.ril.enable.a52=0 \
     ro.ril.enable.a53=1 \
-    ro.ril.enable.dtm = 1 \
-    ro.ril.gprsclass = 12 \
+    ro.ril.enable.dtm=1 \
+    ro.ril.gprsclass=12 \
     ro.ril.hsdpa.category=8 \
     ro.ril.hsupa.category=5 \
     ro.ril.hsxpa=2 \
     wifi.interface=eth0 \
     wifi.supplicant_scan_interval=15
-    mobiledata.interfaces=ppp0,rmnet0,rmnet1,rmnet2 \
+    mobiledata.interfaces=rmnet0,rmnet1,rmnet2,ppp0 \
 
 # Default network type.
 # 0 => WCDMA preferred.
@@ -62,7 +62,7 @@ PRODUCT_PROPERTY_OVERRIDES += \
 
 # For PDP overlap problem
 PRODUCT_PROPERTY_OVERRIDES += \
-    ro.ril.avoid.pdp.overlap = 1
+    ro.ril.avoid.pdp.overlap=1
 
 # we have enough storage space to hold precise GC data
 PRODUCT_TAGS += dalvik.gc.type-precise
