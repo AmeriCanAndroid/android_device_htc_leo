@@ -70,7 +70,7 @@ BOARD_VENDOR_QCOM_AMSS_VERSION := 1550
 
 BOARD_VENDOR_USE_AKMD := akm8973
 
-BOARD_EGL_CFG := device/htc/leo/egl.cfg
+BOARD_EGL_CFG := device/htc/leo/prebuilt/egl.cfg
 
 BOARD_USES_QCOM_LIBS := true
 
@@ -85,8 +85,7 @@ BOARD_VENDOR_QCOM_GPS_LOC_API_AMSS_VERSION := 3200
 # Use RGB565 surfaces until userspace drivers are upgraded
 BOARD_NO_RGBX_8888 := true
 
-# Use Special Leo update
-TARGET_USES_LEOUPDATE := true
+TARGET_CUSTOM_RELEASETOOL := device/htc/leo/releasetools/squisher
 
 BOARD_USE_KINETO_COMPATIBILITY := true
 
@@ -112,4 +111,6 @@ BOARD_FLASH_BLOCK_SIZE := 131072
 
 
 TARGET_RELEASETOOLS_EXTENSIONS := device/htc/common
-TARGET_PREBUILT_KERNEL := device/htc/leo/kernel
+TARGET_PREBUILT_KERNEL := device/htc/leo/prebuilt/kernel
+
+

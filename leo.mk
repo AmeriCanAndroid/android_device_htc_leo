@@ -21,12 +21,13 @@
 
 # The gps config appropriate for this device
 PRODUCT_COPY_FILES += \
-    device/htc/leo/gps.conf:system/etc/gps.conf
+    device/htc/leo/prebuilt/gps.conf:system/etc/gps.conf
 
 ## (1) First, the most specific values, i.e. the aspects that are specific to GSM
 
 PRODUCT_COPY_FILES += \
-    device/htc/leo/init.htcleo.rc:root/init.htcleo.rc \
+    device/htc/leo/prebuilt/init.htcleo.rc:root/init.htcleo.rc \
+    device/htc/leo/prebuilt/ueventd.htcleo.rc:root/ueventd.htcleo.rc \
 
 PRODUCT_PROPERTY_OVERRIDES += \
     ro.sf.lcd_density=167 \
@@ -94,7 +95,7 @@ PRODUCT_COPY_FILES += \
 
 # media config xml file
 PRODUCT_COPY_FILES += \
-    device/htc/leo/media_profiles.xml:system/etc/media_profiles.xml
+    device/htc/leo/prebuilt/media_profiles.xml:system/etc/media_profiles.xml
 
 PRODUCT_PACKAGES += \
     sensors.htcleo \
@@ -111,18 +112,18 @@ PRODUCT_PACKAGES += \
 PRODUCT_LOCALES := hdpi
 
 PRODUCT_COPY_FILES += \
-    device/htc/leo/vold.fstab:system/etc/vold.fstab
+    device/htc/leo/prebuilt/vold.fstab:system/etc/vold.fstab
 
 # Keylayouts
 PRODUCT_COPY_FILES += \
-    device/htc/leo/leo-keypad.kl:system/usr/keylayout/leo-keypad.kl \
-    device/htc/leo/leo-keypad.kcm.bin:system/usr/keychars/leo-keypad.kcm.bin \
-    device/htc/leo/h2w_headset.kl:system/usr/keylayout/h2w_headset.kl
+    device/htc/leo/prebuilt/leo-keypad.kl:system/usr/keylayout/leo-keypad.kl \
+    device/htc/leo/prebuilt/leo-keypad.kcm.bin:system/usr/keychars/leo-keypad.kcm.bin \
+    device/htc/leo/prebuilt/h2w_headset.kl:system/usr/keylayout/h2w_headset.kl
 
 # Firmware
 PRODUCT_COPY_FILES += \
-    device/htc/leo/firmware/fw_bcm4329.bin:system/etc/firmware/fw_bcm4329.bin \
-    device/htc/leo/firmware/fw_bcm4329_apsta.bin:system/etc/firmware/fw_bcm4329_apsta.bin
+    device/htc/leo/prebuilt/firmware/fw_bcm4329.bin:system/etc/firmware/fw_bcm4329.bin \
+    device/htc/leo/prebuilt/firmware/fw_bcm4329_apsta.bin:system/etc/firmware/fw_bcm4329_apsta.bin
 
 #GSM APN LIST
 PRODUCT_COPY_FILES += \
@@ -130,18 +131,20 @@ vendor/cyanogen/prebuilt/common/etc/apns-conf.xml:system/etc/apns-conf.xml
 
 
 PRODUCT_COPY_FILES += \
-    device/htc/leo/modules/bcm4329.ko:system/lib/modules/bcm4329.ko \
-    device/htc/leo/modules/cifs.ko:system/lib/modules/cifs.ko \
-    device/htc/leo/modules/msm_rmnet.ko:system/lib/modules/msm_rmnet.ko \
-    device/htc/leo/modules/nls_utf8.ko:system/lib/modules/nls_utf8.ko \
-    device/htc/leo/modules/tun.ko:system/lib/modules/tun.ko
+    device/htc/leo/prebuilt/modules/bcm4329.ko:system/lib/modules/bcm4329.ko \
+    device/htc/leo/prebuilt/modules/cifs.ko:system/lib/modules/cifs.ko \
+    device/htc/leo/prebuilt/modules/msm_rmnet.ko:system/lib/modules/msm_rmnet.ko \
+    device/htc/leo/prebuilt/modules/nls_utf8.ko:system/lib/modules/nls_utf8.ko \
+    device/htc/leo/prebuilt/modules/tun.ko:system/lib/modules/tun.ko \
+    device/htc/leo/prebuilt/modules/uinput.ko:system/lib/modules/uinput.ko \
+    device/htc/leo/prebuilt/modules/fuse.ko:system/lib/modules/fuse.ko
 
 PRODUCT_COPY_FILES += \
-    device/htc/leo/zImage:boot/zImage \
-    device/htc/leo/initrd.gz:boot/initrd.gz \
+    device/htc/leo/prebuilt/zImage:boot/zImage \
+    device/htc/leo/prebuilt/initrd.gz:boot/initrd.gz \
 
 ifeq ($(TARGET_PREBUILT_KERNEL),)
-LOCAL_KERNEL := device/htc/leo/kernel
+LOCAL_KERNEL := device/htc/leo/prebuilt/kernel
 else
 LOCAL_KERNEL := $(TARGET_PREBUILT_KERNEL)
 endif
