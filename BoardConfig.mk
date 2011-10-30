@@ -112,5 +112,5 @@ BOARD_FLASH_BLOCK_SIZE := 131072
 
 TARGET_RELEASETOOLS_EXTENSIONS := device/htc/common
 TARGET_PREBUILT_KERNEL := device/htc/leo/prebuilt/kernel
-
+-include device/htc/7x30-recovery/BoardConfigCommon.mk
 
