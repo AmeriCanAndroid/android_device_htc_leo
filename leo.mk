@@ -129,7 +129,7 @@ PRODUCT_COPY_FILES += \
 PRODUCT_COPY_FILES += \
 vendor/cyanogen/prebuilt/common/etc/apns-conf.xml:system/etc/apns-conf.xml
 
-
+# kernel modules
 PRODUCT_COPY_FILES += \
     device/htc/leo/prebuilt/modules/bcm4329.ko:system/lib/modules/bcm4329.ko \
     device/htc/leo/prebuilt/modules/cifs.ko:system/lib/modules/cifs.ko \
@@ -139,6 +139,7 @@ PRODUCT_COPY_FILES += \
     device/htc/leo/prebuilt/modules/uinput.ko:system/lib/modules/uinput.ko \
     device/htc/leo/prebuilt/modules/fuse.ko:system/lib/modules/fuse.ko
 
+# kernel
 PRODUCT_COPY_FILES += \
     device/htc/leo/prebuilt/zImage:boot/zImage \
     device/htc/leo/prebuilt/initrd.gz:boot/initrd.gz \
