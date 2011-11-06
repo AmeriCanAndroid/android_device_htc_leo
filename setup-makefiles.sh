@@ -136,4 +136,3 @@ mkdir -p ../../../$OUTDIR/overlay/packages/apps/Launcher2/res/layout
     <include layout="@layout/all_apps_3d" />
 </merge>
 EOF
-
