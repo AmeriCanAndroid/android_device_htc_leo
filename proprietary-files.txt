@@ -25,5 +25,3 @@ lib/liboemcamera.so
 lib/libOmxVdec.so
 lib/libOmxVidEnc.so
 lib/libOmxCore.so
-lib/hw/sensors.bravo.so
-
