@@ -105,8 +105,8 @@ PRODUCT_PACKAGES += \
     copybit.qsd8k \
     leo-reference-ril \
     libhtc_ril_wrapper \
-    gps.htcleo \
-    libgps
+    gps.leo \
+    libgps.aca
 
 # leo uses high-density artwork where available 
 PRODUCT_LOCALES := hdpi
