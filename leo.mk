@@ -79,6 +79,9 @@ PRODUCT_PROPERTY_OVERRIDES += \
 ## (2) Also get non-open-source GSM-specific aspects if available
 $(call inherit-product-if-exists, vendor/htc/leo/leo-vendor.mk)
 
+# Don't set /proc/sys/vm/dirty_ratio to 0 when USB mounting
+PRODUCT_PROPERTY_OVERRIDES += \
+    ro.vold.umsdirtyratio=20
 
 DEVICE_PACKAGE_OVERLAYS += device/htc/leo/overlay
 
