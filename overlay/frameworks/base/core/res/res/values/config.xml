@@ -178,8 +178,8 @@
         <item>30</item>
     </integer-array>
 
-   <!-- Enable use of power animations -->
-    <bool name="config_animateScreenLights">false</bool>
+   <!-- Enable use of power animations 
+    <bool name="config_animateScreenLights">false</bool> -->
 
    <!-- toggles weather device is tablet or phone. right now,
         tablets are know to have soft buttons, but phones have harware
