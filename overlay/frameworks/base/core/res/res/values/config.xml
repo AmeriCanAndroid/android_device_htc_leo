@@ -183,6 +183,9 @@
     <bool name="config_enableScreenOnAnimation">true</bool>
     <bool name="config_enableScreenOffAnimation">true</bool>
 
+   <!-- Set and Unsets WiMAX -->
+    <bool name="config_wimaxEnabled">false</bool>
+
    <!-- toggles weather device is tablet or phone. right now,
         tablets are know to have soft buttons, but phones have harware
         buttons. this might change in the future - especially when the
