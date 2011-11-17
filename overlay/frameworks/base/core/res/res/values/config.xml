@@ -178,8 +178,10 @@
         <item>30</item>
     </integer-array>
 
-   <!-- Enable use of power animations 
-    <bool name="config_animateScreenLights">false</bool> -->
+   <!-- If this is true, the screen will fade off. -->
+    <bool name="config_enableScreenAnimation">true</bool>
+    <bool name="config_enableScreenOnAnimation">true</bool>
+    <bool name="config_enableScreenOffAnimation">true</bool>
 
    <!-- toggles weather device is tablet or phone. right now,
         tablets are know to have soft buttons, but phones have harware
