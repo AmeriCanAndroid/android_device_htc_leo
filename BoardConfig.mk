@@ -31,16 +31,42 @@ endif
 # inherit from the proprietary version
 -include vendor/htc/leo/BoardConfigVendor.mk
 
-TARGET_NO_BOOTLOADER := true
-
-TARGET_BOARD_PLATFORM := qsd8k
-TARGET_BOARD_PLATFORM_GPU := qcom-adreno200
+# include recovery offmode stuff
+-include device/htc/7x30-recovery/BoardConfigCommon.mk
 
 TARGET_CPU_ABI := armeabi-v7a
 TARGET_CPU_ABI2 := armeabi
 TARGET_ARCH_VARIANT := armv7-a-neon
 ARCH_ARM_HAVE_TLS_REGISTER := true
+
+TARGET_NO_BOOTLOADER := true
+
+BOARD_KERNEL_BASE := 0x11800000
+BOARD_KERNEL_CMDLINE := no_console_suspend=1 wire.search_count=5
+
+TARGET_BOARD_PLATFORM := qsd8k
+TARGET_BOARD_PLATFORM_GPU := qcom-adreno200
 TARGET_BOOTLOADER_BOARD_NAME := htcleo
+
+BOARD_EGL_CFG := device/htc/leo/prebuilt/egl.cfg
+
+TARGET_RELEASETOOLS_EXTENSIONS := device/htc/common
+TARGET_CUSTOM_RELEASETOOL := device/htc/leo/releasetools/squisher
+
+# # cat /proc/mtd
+# dev:    size   erasesize  name
+#mtd0: 00100000 00020000 "misc"
+#mtd1: 00500000 00020000 "recovery"
+#mtd2: 00500000 00020000 "boot"
+#mtd3: 09600000 00020000 "system"
+#mtd4: 02c00000 00020000 "cache"
+#mtd5: 0d900000 00020000 "userdata"
+
+BOARD_BOOTIMAGE_PARTITION_SIZE     := 0x00500000
+BOARD_RECOVERYIMAGE_PARTITION_SIZE := 0x00500000
+BOARD_SYSTEMIMAGE_PARTITION_SIZE   := 0x09600000   # limited so we enforce room to grow
+BOARD_USERDATAIMAGE_PARTITION_SIZE := 0x0d900000
+BOARD_FLASH_BLOCK_SIZE := 131072
 
 # Wifi related defines
 BOARD_WPA_SUPPLICANT_DRIVER := WEXT
@@ -52,60 +78,33 @@ WIFI_DRIVER_FW_AP_PATH      := "/vendor/firmware/fw_bcm4329_apsta.bin"
 WIFI_DRIVER_MODULE_ARG      := "firmware_path=/vendor/firmware/fw_bcm4329.bin nvram_path=/proc/calibration"
 WIFI_DRIVER_MODULE_NAME     := "bcm4329"
 
-BOARD_KERNEL_CMDLINE := no_console_suspend=1 msmsdcc_sdioirq=1 wire.search_count=5
-
-BOARD_USES_GENERIC_AUDIO := false
-BOARD_KERNEL_BASE := 0x11800000
-BOARD_KERNEL_NEW_PPPOX := true
-
 BOARD_HAVE_BLUETOOTH := true
 BOARD_HAVE_BLUETOOTH_BCM := true
 
-TARGET_PROVIDES_INIT := true
-
-BOARD_VENDOR_QCOM_AMSS_VERSION := 1550
-
-BOARD_VENDOR_USE_AKMD := akm8973
-
-BOARD_EGL_CFG := device/htc/leo/prebuilt/egl.cfg
+BOARD_USES_GENERIC_AUDIO := false
+BOARD_KERNEL_NEW_PPPOX := true
 
 BOARD_USES_QCOM_LIBS := true
+BOARD_VENDOR_QCOM_AMSS_VERSION := 1550
+BOARD_VENDOR_USE_AKMD := akm8973
+
+TARGET_PROVIDES_INIT := true
 
 BOARD_USE_OPENSSL_ENGINE := true
 
 BOARD_USE_FROYO_LIBCAMERA := true
 BOARD_USE_REVERSE_FFC := true
 
-TARGET_USES_16BPPSURFACE_FOR_OPAQUE := true
-# Use RGB565 surfaces until userspace drivers are upgraded
 BOARD_NO_RGBX_8888 := true
-BOARD_USES_QCOM_LIBS := true
+TARGET_USES_16BPPSURFACE_FOR_OPAQUE := true
 
 BOARD_USE_KINETO_COMPATIBILITY := true
 
 BOARD_HAVE_FM_RADIO := true
 BOARD_GLOBAL_CFLAGS += -DHAVE_FM_RADIO
 
-TARGET_CUSTOM_RELEASETOOL := device/htc/leo/releasetools/squisher
-
-# # cat /proc/mtd
-# dev:    size   erasesize  name
-# mtd0: 000a0000 00020000 "misc"
-# mtd1: 00500000 00020000 "recovery"
-# mtd2: 00280000 00020000 "boot"
-# mtd3: 0fa00000 00020000 "system"
-# mtd4: 02800000 00020000 "cache"
-# mtd5: 093a0000 00020000 "userdata"
-
-BOARD_BOOTIMAGE_PARTITION_SIZE     := 0x00300000
-BOARD_RECOVERYIMAGE_PARTITION_SIZE := 0x00500000
-BOARD_SYSTEMIMAGE_PARTITION_SIZE   := 0x09100000   # limited so we enforce room to grow
-BOARD_USERDATAIMAGE_PARTITION_SIZE := 0x093a0000
-BOARD_FLASH_BLOCK_SIZE := 131072
-
-
-TARGET_RELEASETOOLS_EXTENSIONS := device/htc/common
 TARGET_PREBUILT_KERNEL := device/htc/leo/prebuilt/kernel
+TARGET_PREBUILT_RECOVERY_KERNEL := device/htc/leo/prebuilt/recovery_kernel
 
 # to enable the GPS HAL
 BOARD_VENDOR_QCOM_GPS_LOC_API_HARDWARE := leo
