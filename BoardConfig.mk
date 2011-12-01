@@ -115,3 +115,5 @@ BOARD_USE_USB_MASS_STORAGE_SWITCH := true
 
 TARGET_PREBUILT_RECOVERY_KERNEL := device/htc/leo/prebuilt/recovery_kernel
 -include device/htc/7x30-recovery/BoardConfigCommon.mk
+
+USE_OPENGL_RENDERER := true
