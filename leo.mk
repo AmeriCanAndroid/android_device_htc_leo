@@ -27,7 +27,6 @@ PRODUCT_COPY_FILES += \
     device/htc/leo/prebuilt/ueventd.htcleo.rc:root/ueventd.htcleo.rc \
     device/htc/leo/prebuilt/logo.rle:root/logo.rle \
 
-
 # we have enough storage space to hold precise GC data
 PRODUCT_TAGS += dalvik.gc.type-precise
 
@@ -61,13 +60,11 @@ PRODUCT_PACKAGES += \
     lights.htcleo \
     librs_jni \
     gralloc.qsd8k \
+    copybit.qsd8k \
     leo-reference-ril \
     gps.htcleo \
     libgps \
-    libhtc_ril_wrapper \
-    audio.a2dp.default \
-    audio.primary.qsd8k \
-    audio_policy.qsd8k
+    libhtc_ril_wrapper
 
 
 
@@ -88,26 +85,15 @@ PRODUCT_COPY_FILES += \
     device/htc/leo/prebuilt/firmware/fw_bcm4329.bin:system/etc/firmware/fw_bcm4329.bin \
     device/htc/leo/prebuilt/firmware/fw_bcm4329_apsta.bin:system/etc/firmware/fw_bcm4329_apsta.bin
 
-# Touchscreen
+#GSM APN LIST
 PRODUCT_COPY_FILES += \
-    device/htc/leo/prebuilt/htcleo-touchscreen.idc:system/usr/idc/htcleo-touchscreen.idc
+    vendor/cyanogen/prebuilt/common/etc/apns-conf.xml:system/etc/apns-conf.xml
 
-# PPP files
-PRODUCT_COPY_FILES += \
-    device/htc/leo/prebuilt/ppp/ip-up:system/etc/ppp/ip-up \
-    device/htc/leo/prebuilt/ppp/ip-down:system/etc/ppp/ip-down \
-    device/htc/leo/prebuilt/ppp/options:system/etc/ppp/options
-
-# kernel modules
-PRODUCT_COPY_FILES += \
-    device/htc/leo/prebuilt/modules/bcm4329.ko:system/lib/modules/bcm4329.ko \
-    device/htc/leo/prebuilt/modules/cifs.ko:system/lib/modules/cifs.ko \
-    device/htc/leo/prebuilt/modules/msm_rmnet.ko:system/lib/modules/msm_rmnet.ko \
-    device/htc/leo/prebuilt/modules/tun.ko:system/lib/modules/tun.ko \
-    device/htc/leo/prebuilt/modules/fuse.ko:system/lib/modules/fuse.ko \
-    device/htc/leo/prebuilt/modules/kineto_gan.ko:system/lib/modules/kineto_gan.ko \
-    device/htc/leo/prebuilt/modules/alsa-mix-htc-leo.ko:system/lib/modules/alsa-mix-htc-leo.ko \
-    device/htc/leo/prebuilt/modules/alsa-pcm-htc-leo.ko:system/lib/modules/alsa-pcm-htc-leo.ko
+# Kernel Modules
+PRODUCT_COPY_FILES += $(shell \
+    find device/htc/leo/prebuilt/modules -name '*.ko' \
+    | sed -r 's/^\/?(.*\/)([^/ ]+)$$/\1\2:system\/lib\/modules\/\2/' \
+    | tr '\n' ' ')
 
 # kernel
 PRODUCT_COPY_FILES += \
@@ -127,7 +113,7 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_KERNEL):kernel
 
 # media profiles and capabilities spec
-$(call inherit-product, device/htc/leo/prebuilt/media_a1026.mk)
+$(call inherit-product, device/htc/leo/media_a1026.mk)
 
 # stuff common to all HTC phones
 $(call inherit-product, device/htc/common/common.mk)

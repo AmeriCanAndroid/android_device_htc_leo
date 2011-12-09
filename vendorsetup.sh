@@ -22,4 +22,3 @@
 
 add_lunch_combo htc_leo-userdebug
 add_lunch_combo htc_leo-eng
-add_lunch_combo full_leo-eng
