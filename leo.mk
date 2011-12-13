@@ -27,6 +27,7 @@ PRODUCT_COPY_FILES += \
     device/htc/leo/prebuilt/ueventd.htcleo.rc:root/ueventd.htcleo.rc \
     device/htc/leo/prebuilt/logo.rle:root/logo.rle \
 
+
 # we have enough storage space to hold precise GC data
 PRODUCT_TAGS += dalvik.gc.type-precise
 
@@ -45,7 +46,10 @@ PRODUCT_COPY_FILES += \
     frameworks/base/data/etc/android.hardware.sensor.proximity.xml:system/etc/permissions/android.hardware.sensor.proximity.xml \
     frameworks/base/data/etc/android.hardware.sensor.light.xml:system/etc/permissions/android.hardware.sensor.light.xml \
     frameworks/base/data/etc/android.software.sip.voip.xml:system/etc/permissions/android.software.sip.voip.xml \
-    frameworks/base/data/etc/android.hardware.touchscreen.multitouch.xml:system/etc/permissions/android.hardware.touchscreen.multitouch.xml
+    frameworks/base/data/etc/android.hardware.touchscreen.multitouch.jazzhand.xml:system/etc/permissions/android.hardware.touchscreen.multitouch.jazzhand.xml \
+    frameworks/base/data/etc/android.hardware.usb.accessory.xml:system/etc/permissions/android.hardware.usb.accessory.xml \
+    frameworks/base/data/etc/android.hardware.sensor.accelerometer.xml:system/etc/permissions/android.hardware.sensor.accelerometer.xml \
+    frameworks/base/data/etc/android.hardware.sensor.compass.xml:system/etc/permissions/android.hardware.sensor.compass.xml
 
 # media config xml file
 PRODUCT_COPY_FILES += \
@@ -59,14 +63,16 @@ PRODUCT_PACKAGES += \
     sensors.htcleo \
     lights.htcleo \
     librs_jni \
-    gralloc.qsd8k \
-    copybit.qsd8k \
     leo-reference-ril \
     gps.htcleo \
     libgps \
-    libhtc_ril_wrapper
-
-
+    com.android.future.usb.accessory \
+    libhtc_ril_wrapper \
+    audio.a2dp.default \
+    audio.primary.htcleo \
+    audio_policy.htcleo \
+    copybit.htcleo \
+    gralloc.htcleo
 
 # leo uses high-density artwork where available 
 PRODUCT_LOCALES := hdpi
@@ -76,8 +82,8 @@ PRODUCT_COPY_FILES += \
 
 # Keylayouts
 PRODUCT_COPY_FILES += \
-    device/htc/leo/prebuilt/keylayout/leo-keypad.kl:system/usr/keylayout/leo-keypad.kl \
-    device/htc/leo/prebuilt/keylayout/leo-keypad.kcm.bin:system/usr/keychars/leo-keypad.kcm.bin \
+    device/htc/leo/prebuilt/keylayout/htcleo-keypad.kl:system/usr/keylayout/htcleo-keypad.kl \
+    device/htc/leo/prebuilt/keylayout/htcleo-keypad.kcm.bin:system/usr/keychars/htcleo-keypad.kcm.bin \
     device/htc/leo/prebuilt/keylayout/h2w_headset.kl:system/usr/keylayout/h2w_headset.kl
 
 # Firmware
@@ -85,9 +91,16 @@ PRODUCT_COPY_FILES += \
     device/htc/leo/prebuilt/firmware/fw_bcm4329.bin:system/etc/firmware/fw_bcm4329.bin \
     device/htc/leo/prebuilt/firmware/fw_bcm4329_apsta.bin:system/etc/firmware/fw_bcm4329_apsta.bin
 
-#GSM APN LIST
+# Touchscreen
 PRODUCT_COPY_FILES += \
-    vendor/cyanogen/prebuilt/common/etc/apns-conf.xml:system/etc/apns-conf.xml
+    device/htc/leo/prebuilt/htcleo-touchscreen.idc:system/usr/idc/htcleo-touchscreen.idc
+
+# PPP files
+PRODUCT_COPY_FILES += \
+    device/htc/leo/prebuilt/ppp/97ppp:system/etc/init.d/97ppp \
+    device/htc/leo/prebuilt/ppp/ip-up:system/etc/ppp/ip-up \
+    device/htc/leo/prebuilt/ppp/ip-down:system/etc/ppp/ip-down \
+    device/htc/leo/prebuilt/ppp/options:system/etc/ppp/options
 
 # Kernel Modules
 PRODUCT_COPY_FILES += $(shell \
@@ -113,7 +126,7 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_KERNEL):kernel
 
 # media profiles and capabilities spec
-$(call inherit-product, device/htc/leo/media_a1026.mk)
+$(call inherit-product, device/htc/leo/prebuilt/media_a1026.mk)
 
 # stuff common to all HTC phones
 $(call inherit-product, device/htc/common/common.mk)
